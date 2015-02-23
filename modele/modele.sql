@@ -1,6 +1,15 @@
 
+CREATE TABLE election (
+                id_election INTEGER NOT NULL,
+                date DATE NOT NULL,
+                mode_scrutin VARCHAR NOT NULL,
+                CONSTRAINT election_pk PRIMARY KEY (id_election)
+);
+
+
 CREATE TABLE integration (
                 erreur VARCHAR NOT NULL,
+                type_erreur VARCHAR NOT NULL,
                 CONSTRAINT integration_pk PRIMARY KEY (erreur)
 );
 
@@ -21,25 +30,23 @@ CREATE TABLE candidat (
 );
 
 
-CREATE TABLE scrutin (
-                id_scrutin VARCHAR NOT NULL,
-                date DATE NOT NULL,
-                partielle VARCHAR NOT NULL,
-                tour INTEGER NOT NULL,
-                mode_scrutin VARCHAR NOT NULL,
-                CONSTRAINT scrutin_pk PRIMARY KEY (id_scrutin)
-);
-
-
 CREATE TABLE geo (
                 id_geo INTEGER NOT NULL,
-                id_scrutin VARCHAR NOT NULL,
                 date_scrutin DATE NOT NULL,
                 ref_geo VARCHAR NOT NULL,
                 dec_arr VARCHAR NOT NULL,
-                CONSTRAINT geo_pk PRIMARY KEY (id_geo, id_scrutin)
+                CONSTRAINT geo_pk PRIMARY KEY (id_geo)
 );
 COMMENT ON COLUMN geo.dec_arr IS 'DŽcoupage arrondissement';
+
+
+CREATE TABLE scrutin (
+                id_scrutin VARCHAR NOT NULL,
+                id_election INTEGER NOT NULL,
+                partielle VARCHAR NOT NULL,
+                tour INTEGER NOT NULL,
+                CONSTRAINT scrutin_pk PRIMARY KEY (id_scrutin, id_election)
+);
 
 
 CREATE TABLE resultat (
@@ -51,6 +58,13 @@ CREATE TABLE resultat (
                 CONSTRAINT resultat_pk PRIMARY KEY (id_scrutin, id_geo, id_candidat, id_etiquette)
 );
 
+
+ALTER TABLE scrutin ADD CONSTRAINT election_scrutin_fk
+FOREIGN KEY (id_election)
+REFERENCES election (id_election)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
 
 ALTER TABLE resultat ADD CONSTRAINT etiquette_resultat_fk
 FOREIGN KEY (id_etiquette)
@@ -66,9 +80,9 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE geo ADD CONSTRAINT scrutin_geo_fk
-FOREIGN KEY (id_scrutin)
-REFERENCES scrutin (id_scrutin)
+ALTER TABLE resultat ADD CONSTRAINT geo_resultat_fk
+FOREIGN KEY (id_geo)
+REFERENCES geo (id_geo)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
@@ -76,13 +90,6 @@ NOT DEFERRABLE;
 ALTER TABLE resultat ADD CONSTRAINT scrutin_resultat_fk
 FOREIGN KEY (id_scrutin)
 REFERENCES scrutin (id_scrutin)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
-
-ALTER TABLE resultat ADD CONSTRAINT geo_resultat_fk
-FOREIGN KEY (id_geo, id_scrutin)
-REFERENCES geo (id_geo, id_scrutin)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
