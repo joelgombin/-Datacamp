@@ -1,0 +1,44 @@
+use "C:\Users\Antoine\Desktop\FRCOM\hist.dta" 
+clear all
+import delimited C:\Users\Antoine\Desktop\FRCOM\historiq2014.txt
+split eff, parse(-)
+list eff1 eff2 eff3
+destring eff1, gen (jour) force
+destring eff2 , gen (mois) force
+destring eff3 , gen (anee) force
+ren anee annee
+egen insee = concat( dep com)  if com >=100
+egen insee2 = concat( dep com)  if com >=10 & com<100, punct(0)
+egen insee3 = concat( dep com)  if com <10 , punct(00)
+replace insee = insee2 if insee2 != ""
+replace insee = insee3 if insee3 != ""
+tab nbcom
+tab rangcom
+tab comech
+gen orig = insee
+gen arriv1 = comech
+tab depanc
+gen arriv2 = depanc
+tab arranc
+tab tnccoff tnccanc
+list nccoff nccanc
+gen arriv3 = .
+replace arriv3 = arriv2
+drop arriv3
+gen arriv3 = arriv1
+tostring arriv2, generate(arriv2s)
+replace arriv3 = arriv2s
+drop arriv3
+gen arriv3 = .
+drop arriv3
+gen arriv3 = arriv1
+replace arriv3 = arriv2s if arriv3 != ""
+drop arriv3
+gen arriv3 = arriv1
+replace arriv3 = arriv2s if arriv2s != ""
+replace arriv3 = arriv1 if arriv1 != ""
+list orig arriv3 annee
+egen traject = concat (orig arriv3), punct(_)
+list traject
+list traject annee
+save "C:\Users\Antoine\Desktop\FRCOM\HISTO.dta"
