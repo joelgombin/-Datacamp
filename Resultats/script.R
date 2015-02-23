@@ -23,3 +23,11 @@ df2012 %>%
   select(CodeBV:CodeInsee, Inscrits2:Sarkozy2) %>%
   write.csv2(file = "/media/Data/Dropbox/hackathon élections/-Datacamp/Resultats/Presidentielle 2012/Pres2012BVT2.csv", row.names = FALSE)
 
+load("/media/Data/Dropbox/Thèse/données propres/présidentielle 2012/P2012comm.Rdata")
+pres2012comm %>%
+  select(CodeInsee, Inscrits, Votants, Blancs.et.nuls, `Exprimés`, Joly, LePen, Sarkozy, Mélenchon, Poutou, Arthaud, Cheminade, Bayrou, Dupont.Aignan, Hollande) %>%
+  write.csv2(file = "/media/Data/Dropbox/hackathon élections/-Datacamp/Resultats/Presidentielle 2012/Pres2012commT1.csv", row.names = FALSE)
+
+pres2012comm %>%
+  select(CodeInsee, Inscrits2, Votants2, Blancs.et.nuls.2, `Exprimés.2`, Hollande2, Sarkozy2) %>%
+  write.csv2(file = "/media/Data/Dropbox/hackathon élections/-Datacamp/Resultats/Presidentielle 2012/Pres2012commT2.csv", row.names = FALSE)
